@@ -1,0 +1,44 @@
+<div class="wrapper">
+    <div *ngIf="loading === false" class="body">
+        <img class="logo" src="../../../assets/img/login.png" alt="img login">
+        <h3>Registrarse</h3>
+        <form [formGroup]="userForm">
+
+            <div class="form-floating mb-3 mt-2">
+                <input formControlName="completeName" type="text" class="form-control" placeholder="ingrese su nombre completo">
+                <label>Nombre y apellidos</label>
+                <span style="color: red;" *ngIf="validField('completeName')" class="error">
+                    <span>el nombre y apellidos son requerido.</span>
+                </span>
+            </div>
+
+            <div class="form-floating mb-3 mt-2">
+                <input formControlName="username" type="text" class="form-control" placeholder="ingrese un nombre de usuario">
+                <label>username</label>
+                <span style="color: red;" *ngIf="validField('username')" class="error">
+                    <span>el nombre de usuario es requerido.</span>
+                </span>
+            </div>
+           
+            <div class="form-floating mb-3">
+                <input formControlName="password" type="text" class="form-control" placeholder="ingrese una contraseña">
+                <label>Contraseña</label>
+                <span style="color: red;" *ngIf="validField('password')" class="error">
+                    <span>La contraseña es requerida.</span>
+                </span>
+            </div>  
+            <div class="form-floating mb-3">
+                <input formControlName="confirmPassword" type="text" class="form-control" placeholder="repetir la contraseña">
+                <label>Repetir contraseña</label>
+                <span style="color: red;" *ngIf="validField('confirmPassword')" class="error">
+                    <span>La confirmación de la contraseña es requerida.</span>
+                </span>
+            </div>      
+        </form>
+        <div class="d-grid gap-2 mb-3">
+            <button (click)="signIn()" mat-raised-button color="primary" [disabled]="!userForm.valid">Registrarse</button>
+        </div>  
+        <a href="login">volver</a>
+    </div>
+   <app-spinner *ngIf="loading === true"></app-spinner>
+</div>

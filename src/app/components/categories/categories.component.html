@@ -1,0 +1,104 @@
+<app-navbar></app-navbar>
+<div class="container mt-2 text-center">
+    <h2>Categorias &nbsp;</h2>
+
+      <div style="overflow-X:hidden;">
+   
+          <div class="mat-elevation-z8">
+            <table mat-table [dataSource]="dataSource" matSort>
+          
+              <!-- ID Column -->
+              <ng-container matColumnDef="Id">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> # </th>
+                <td mat-cell *matCellDef="let row"> {{row.id}} </td>
+              </ng-container>
+          
+              <!-- Progress Column -->
+              <ng-container matColumnDef="Name">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
+                <td mat-cell *matCellDef="let row"> {{row.name}}</td>
+              </ng-container>
+          
+              <!-- Fruit Column -->
+              <ng-container matColumnDef="Actions">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Acciones </th>
+                <td mat-cell *matCellDef="let row">
+                  <button *ngIf="role === 'root'" style="border-radius: 5px; margin-left: 2px;" (click)="eyeId = row.id ;getOneCategory(row.id);modalOpenForm(editModal)"><mat-icon>edit</mat-icon></button>
+                  <button *ngIf="role === 'root'" style="border-radius: 5px; margin-left: 2px;" (click)="deleteCategory(row.id)"><mat-icon>delete</mat-icon></button>    
+                    </td>
+              </ng-container>
+          
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          
+              <!-- Row shown when there is no matching data. -->
+
+            </table>
+          
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+            <button type="button" style="height: 55px; width: 100%;" class="btn btn-primary" (click)="modalOpenForm(addModal)" [disabled]="null" rippleEffect>
+              Agregar
+            </button>    
+          </div>            
+    </div>
+</div>
+  
+  <!-- ? ADD MODAL -->
+  <div class="login-form">
+    <ng-template #addModal let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel1">Agregar Categoria</h4>
+            <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body" tabindex="0" ngbAutofocus>
+            <form [formGroup]="categoryForm">
+                <!-- input -->
+                <label>Nombre</label>
+                <div class="form-group">
+                    <input formControlName="name" type="text" placeholder="Nombre" class="form-control" />
+                    <span style="color: red;" *ngIf="validField('name')" class="error">
+                        El nombre es requerido.
+                    </span>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" (click)="createCategory()" [disabled]="null" rippleEffect>
+                Agregar
+            </button>
+        </div>
+    </ng-template>
+  </div>
+  <!-- / END ADD MODAL -->
+  
+  <!-- ? EDIT MODAL -->
+  <div class="login-form">
+    <ng-template #editModal let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel1">Editar Categoria</h4>
+            <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body" tabindex="0" ngbAutofocus>
+            <form [formGroup]="editCategoryForm">
+                <!-- input -->
+                <label>Nombre</label>
+                <div class="form-group">
+                    <input formControlName="name" type="text" placeholder="Nombre" class="form-control" />
+                    <span style="color: red;" *ngIf="validField('name')" class="error">
+                        El nombre es requerido.
+                    </span>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" (click)="updateCategory(eyeId)" [disabled]="null" rippleEffect>
+                Guardar
+            </button>
+        </div>
+    </ng-template>
+  </div>
+  <!-- / END EDIT MODAL -->

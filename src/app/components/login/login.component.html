@@ -1,0 +1,26 @@
+<div class="wrapper">
+    <div *ngIf="loading == false" class="body">
+        <img class="logo" src="../../../assets//img/login.png" alt="img login">
+        <h3>Iniciar Sesión</h3>
+        <form [formGroup]="loginForm">
+            <div class="form-floating mb-3 mt-2">                
+                <input formControlName="username" type="text" class="form-control" placeholder="ingrese su usuario">
+                <label>Usuario</label>
+                <span style="color: red;" *ngIf="validField('username')" class="error">
+                    <span>El nombre de usuario es requerido.</span>
+                </span>
+            </div>
+            <div class="form-floating mb-3 mt-2">                
+                <input formControlName="password" type="password" class="form-control" placeholder="ingrese su contraseña">
+                <label>Contraseña</label>
+                <span style="color: red;" *ngIf="validField('password')" class="error">
+                    <span>La contraseña es requerida.</span>
+                </span>
+            </div> 
+        </form>     
+        <div class="d-grid gap-2">
+            <button mat-raised-button color="primary" (click)="login()" [disabled]="!loginForm.valid" >Inicia sesión</button>
+        </div>  
+    </div>
+    <app-spinner *ngIf="loading === true"></app-spinner>
+</div>

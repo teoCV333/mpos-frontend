@@ -1,0 +1,174 @@
+<app-navbar></app-navbar>
+<div class="container mt-2 text-center">
+    <h2>Producto</h2>
+
+      <div style="overflow-X:hidden;">
+  
+        <mat-form-field style="margin-left: 10px;">
+            <mat-label>Filtrar</mat-label>
+            <input matInput (keyup)="applyFilter($event)" placeholder="Filtrar" #input>
+        </mat-form-field>    
+          <div class="mat-elevation-z8">
+            <table mat-table [dataSource]="dataSource" matSort>
+          
+              <!-- ID Column -->
+              <ng-container matColumnDef="Id">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> # </th>
+                <td mat-cell *matCellDef="let row"> {{row.Id}} </td>
+              </ng-container>
+          
+              <!-- Progress Column -->
+              <ng-container matColumnDef="Name">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
+                <td mat-cell *matCellDef="let row"> {{row.name}}</td>
+              </ng-container>
+          
+              <!-- Name Column -->
+              <ng-container matColumnDef="Cost">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Precio </th>
+                <td mat-cell *matCellDef="let row"> {{row.cost}} </td>
+              </ng-container>
+          
+              <!-- Fruit Column -->
+              <ng-container matColumnDef="Actions">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Acciones </th>
+                <td mat-cell *matCellDef="let row">
+                  <button style="border-radius: 5px; margin-left: 1px;" (click)="getOneProduct(row.Id);modalOpenForm(viewModal)"><mat-icon>open_in_new</mat-icon></button>
+                  <button *ngIf="role === 'root'" style="border-radius: 5px; margin-left: 2px;" (click)="eyeId = row.Id ;getOneProduct(row.Id);modalOpenForm(editModal)"><mat-icon>edit</mat-icon></button>
+                  <button *ngIf="role === 'root'" style="border-radius: 5px; margin-left: 2px;" (click)="deleteProduct(row.Id)"><mat-icon>delete</mat-icon></button>    
+                    </td>
+              </ng-container>
+          
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          
+              <!-- Row shown when there is no matching data. -->
+              <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+              </tr>
+            </table>
+          
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+            <button type="button" style="height: 55px; width: 100%;" class="btn btn-primary" (click)="modalOpenForm(addModal)" [disabled]="null" rippleEffect>
+              Agregar
+            </button>    
+          </div>            
+    </div>
+</div>
+
+<!-- VIEW MODAL -->
+<div class="login-form">
+  <!-- Modal -->
+  <ng-template #viewModal let-modal>
+      <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabel1">Detalles</h4>
+          <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+          </button>
+          </div>
+          <div class="modal-body" tabindex="0" ngbAutofocus>
+              <div>
+                  <p>creado: {{product.createdAt}}  </p>
+                  <p>actualizado: {{product.updatedAt}}  </p>
+              </div>
+          </div>
+          <div class="modal-footer">
+          </div>
+  </ng-template>
+</div>
+<!-- END VIEW MODAL -->
+
+<!-- ? ADD MODAL -->
+<div class="login-form">
+  <ng-template #addModal let-modal>
+      <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabel1">Agregar Producto</h4>
+          <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+      <div class="modal-body" tabindex="0" ngbAutofocus>
+          <form [formGroup]="productForm">
+              <!-- input -->
+              <label>Nombre</label>
+              <div class="form-group">
+                  <input formControlName="name" type="text" placeholder="Nombre" class="form-control" />
+                  <span style="color: red;" *ngIf="validField('name')" class="error">
+                      El nombre es requerido.
+                  </span>
+              </div>
+              <!-- input -->
+              <label>Precio</label>
+              <div class="form-group">
+                  <input formControlName="cost" type="number" placeholder="Precio" class="form-control" />
+                  <span style="color: red;" *ngIf="validField('cost')" class="error">
+                      El precio es requerido.
+                  </span>
+              </div>
+              <!-- select -->
+              <label class="form-label" for="login-email">Categoria</label>
+              <div>
+                  <select (change)="selectedChange($event)" class=" form-control form-control-lg mb-1" id="selectDefault">
+                      <option selected>Seleccionar</option>
+                      <option *ngFor="let category of categories" value="{{category.id}}">{{category.name}}</option>
+                    </select>
+                  <br>
+              </div>
+              
+          </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="createProduct()" [disabled]="null" rippleEffect>
+          Agregar
+      </button>
+      </div>
+  </ng-template>
+</div>
+<!-- / END ADD MODAL -->
+
+<!-- ? EDIT MODAL -->
+<div class="login-form">
+  <ng-template #editModal let-modal>
+      <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabel1">Editar Categoria</h4>
+          <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+      <div class="modal-body" tabindex="0" ngbAutofocus>
+          <form [formGroup]="editProductForm">
+              <!-- input -->
+              <label>Nombre</label>
+              <div class="form-group">
+                  <input formControlName="name" type="text" placeholder="Nombre" class="form-control" />
+                  <span style="color: red;" *ngIf="validField('name')" class="error">
+                      El nombre es requerido.
+                  </span>
+              </div>
+              <!-- input -->
+              <label>Precio</label>
+              <div class="form-group">
+                  <input formControlName="cost" type="number" placeholder="Precio" class="form-control" />
+                  <span style="color: red;" *ngIf="validField('cost')" class="error">
+                      El precio es requerido.
+                  </span>
+              </div>
+              <!-- select -->
+              <label class="form-label" for="login-email">Categoria</label>
+              <div>
+                  <select (change)="selectedChange($event)" class=" form-control form-control-lg mb-1" id="selectDefault">
+                      <option selected>{{product.category.name}}</option>
+                      <option *ngFor="let category of categories" value="{{category.id}}">{{category.name}}</option>
+                    </select>
+                  <br>
+              </div>
+          </form>
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-primary" (click)="updateProduct(eyeId)" [disabled]="null" rippleEffect>
+              Guardar
+          </button>
+      </div>
+  </ng-template>
+</div>
+<!-- / END EDIT MODAL -->
